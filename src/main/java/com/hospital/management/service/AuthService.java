@@ -51,6 +51,10 @@ public class AuthService {
         if(!isValidEmail){
             throw new IllegalStateException("email not valid");
         }
+        if(request.getUserRole().equals(AppUserRole.ADMIN)){
+            return new ResponseEntity<>("You are not allowed to register as ADMIN", 
+                    HttpStatus.FORBIDDEN);
+        }
         String token = appUserService.signUpUser(
                 new AppUser(
                 request.getLastName(),
