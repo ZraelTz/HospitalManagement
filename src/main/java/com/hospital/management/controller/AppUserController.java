@@ -62,7 +62,7 @@ public class AppUserController {
 
     @PutMapping("/update")
     public ResponseEntity<AppUser> updateAppUser(@RequestBody AppUser appUser) {
-        if (!authService.getRole().equals(AppUserRole.ADMIN)) {
+        if (!authService.getRole().equals("ADMIN")) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
         AppUser updateAppUser = appUserService.updateAppUser(appUser);

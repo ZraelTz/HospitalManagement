@@ -6,9 +6,9 @@
 package com.hospital.management.controller;
 
 import com.hospital.management.dto.PrescriptionDto;
+import com.hospital.management.model.AppUserRole;
+import com.hospital.management.service.AuthService;
 import com.hospital.management.service.PrescriptionService;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,23 +18,36 @@ import java.util.List;
  *
  * @author Zrael
  */
-
 @RestController
 @RequestMapping("/api/prescription")
-@AllArgsConstructor
-@Slf4j
 public class PrescriptionController {
 
     private final PrescriptionService prescriptionService;
+    private final AuthService authService;
+    
+    public PrescriptionController(PrescriptionService prescriptionService, AuthService authService) {
+        this.prescriptionService = prescriptionService;
+        this.authService = authService;
+    }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<PrescriptionDto> createPrescription(@RequestBody PrescriptionDto prescriptionDto) {
+        AppUserRole userRole = authService.getRole();
+        if (!userRole.equals(AppUserRole.DOCTOR)&&!userRole.equals(AppUserRole.NURSE)) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(prescriptionService.save(prescriptionDto));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<PrescriptionDto>> getAllPrescriptions() {
+        AppUserRole userRole = authService.getRole();
+        if (!userRole.equals(AppUserRole.ADMIN)&&
+                !userRole.equals(AppUserRole.DOCTOR)&&
+                !userRole.equals(AppUserRole.NURSE)) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(prescriptionService.getAll());
