@@ -19,10 +19,10 @@ spring:
     show-sql: true
 
   mail:
-    host: smtp.gmail.com
+    host: smtp.mail.yahoo.com
     port: 587
-    username: testhospitalmanagement@gmail.com
-    password: $managementTestPassword01
+    username: testhospitalmanagement@yahoo.com
+    password: $apiPassword
 
     properties:
       mail:

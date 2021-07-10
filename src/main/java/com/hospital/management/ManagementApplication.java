@@ -1,5 +1,6 @@
 package com.hospital.management;
 
+import com.hospital.management.config.SwaggerConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @EnableJpaRepositories
@@ -19,6 +21,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = { "com.hospital.management", "com.hospital.management.service"})
 @EnableAsync
 @Service
+@Import(SwaggerConfig.class)
 public class ManagementApplication extends SpringBootServletInitializer{
 
 	public static void main(String[] args) {

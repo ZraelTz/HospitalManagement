@@ -40,7 +40,7 @@ public class EmailService implements EmailSender{
            mimeMessageHelper.setText(email, true);
            mimeMessageHelper.setTo(to);
            mimeMessageHelper.setSubject("Confirm your email address");
-           mimeMessageHelper.setFrom("testhospitalmanagement@gmail.com");
+           mimeMessageHelper.setFrom("testhospitalmanagement@yahoo.com");
            mailSender.send(mimeMessage);
            
        } catch(MessagingException err){
