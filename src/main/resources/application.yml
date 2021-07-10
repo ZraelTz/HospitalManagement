@@ -19,22 +19,9 @@ spring:
     show-sql: true
 
   mail:
-    host: smtp.mail.yahoo.com
-    port: 587
-    username: testhospitalmanagement@yahoo.com
-    password: $apiPassword
-
-    properties:
-      mail:
-        smtp:
-          ssl:
-            port: 465
-            trust: "*" 
-          auth: true
-          starttls:
-            enable: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
+    host: smtp.mailtrap.io
+    port: 25
+    username: 
+    password: 
 
 runtime: java15
