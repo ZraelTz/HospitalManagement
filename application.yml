@@ -23,6 +23,7 @@ spring:
     port: 587
     username: testhospitalmanagement@gmail.com
     password: $managementTestPassword01
+    debug: true
 
     properties:
       mail:
