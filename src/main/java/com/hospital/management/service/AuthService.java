@@ -69,7 +69,7 @@ public class AuthService {
                 request.getUserRole()
             )         
         );
-        String link = "http://localhost:8085/api/registration/confirm?token=" + token;
+        String link = "https://hospital-management-rest--api.herokuapp.com/api/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(), 
                 buildEmail(request.getFirstName(), link));
         return new ResponseEntity<>("Registration Successfull,"
