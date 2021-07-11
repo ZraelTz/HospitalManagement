@@ -27,7 +27,6 @@ spring:
     properties:
       mail:
         smtp:
-          auth: true
           ssl:
             port: 465
             trust: "*" 
