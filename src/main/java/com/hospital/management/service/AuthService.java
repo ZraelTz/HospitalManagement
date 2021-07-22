@@ -6,13 +6,17 @@
 package com.hospital.management.service;
 
 import com.hospital.management.dto.AuthenticationResponse;
+import com.hospital.management.dto.DoctorRegistrationRequest;
 import com.hospital.management.dto.LoginRequest;
-import com.hospital.management.dto.RegistrationRequest;
-import com.hospital.management.model.AppUser;
+import com.hospital.management.dto.NurseRegistrationRequest;
+import com.hospital.management.dto.PatientRegistrationRequest;
+import com.hospital.management.model.Patient;
 import com.hospital.management.model.AppUserRole;
 import com.hospital.management.util.EmailSender;
 import com.hospital.management.util.EmailValidator;
 import com.hospital.management.model.ConfirmationToken;
+import com.hospital.management.model.Doctor;
+import com.hospital.management.model.Nurse;
 import com.hospital.management.security.JwtProvider;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -37,7 +41,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Configuration
 public class AuthService {
     
-    private final AppUserService appUserService;
+    private final PatientService patientService;
+    private final NurseService nurseService;
+    private final DoctorService doctorService;
     private final EmailValidator emailValidator;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
@@ -45,37 +51,99 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private static String username;
     
-    public ResponseEntity<String> register(RegistrationRequest request) {
+    //register patient with PatientRegistrationRequest dto
+    public ResponseEntity<String> registerPatient(PatientRegistrationRequest request) {
         boolean isValidEmail = emailValidator.
                 test(request.getEmail());
         if(!isValidEmail){
             throw new IllegalStateException("email not valid");
         }
-        if(request.getUserRole().equals(AppUserRole.ADMIN)){
-            return new ResponseEntity<>("You are not allowed to register as ADMIN", 
-                    HttpStatus.FORBIDDEN);
-        }
-        String token = appUserService.signUpUser(
-                new AppUser(
-                request.getLastName(),
+        
+        String token = patientService.signUpPatient(new Patient(
                 request.getFirstName(),
+                request.getLastName(),
+                request.getOtherNames(),
+                request.getAddress(),
+                request.getCountry(),
+                request.getCity(),
+                request.getCountryState(),
                 request.getEmail(),
                 request.getPassword(),
-                request.getUserId(),
+                request.getDob(),
                 request.getGender(),
-                request.getSymptom(),
-                request.getDept(),
-                request.getDoctorId(),
-                request.getUserRole()
+                request.getPhone()
             )         
         );
-        String link = "https://hospital-management-rest--api.herokuapp.com/api/registration/confirm?token=" + token;
+        String link = "http://localhost:8085/api/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(), 
                 buildEmail(request.getFirstName(), link));
-        return new ResponseEntity<>("Registration Successfull,"
-                + " check email for verification link", HttpStatus.OK);
+        return new ResponseEntity<>("Your Patient Account Registration was successfull,"
+                + " check your email for verification link", HttpStatus.OK);
     }
     
+    //register doctor with DoctorRegistrationRequest dto
+    public ResponseEntity<String> registerDoctor(DoctorRegistrationRequest request) {
+        boolean isValidEmail = emailValidator.
+                test(request.getEmail());
+        if (!isValidEmail) {
+            throw new IllegalStateException("email not valid");
+        }
+
+        String token = doctorService.signUpDoctor(new Doctor(
+                request.getFirstName(),
+                request.getLastName(),
+                request.getOtherNames(),
+                request.getAddress(),
+                request.getCountry(),
+                request.getCity(),
+                request.getCountryState(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getDob(),
+                request.getGender(),
+                request.getDepartment(),
+                request.getPhone()
+        )
+        );
+        String link = "http://localhost:8085/api/registration/confirm?token=" + token;
+        emailSender.send(request.getEmail(),
+                buildEmail(request.getFirstName(), link));
+        return new ResponseEntity<>("Your Docotor Account Registration was successfull,"
+                + " check your email for verification link", HttpStatus.OK);
+    }
+    
+    //register nurse with NurseRegistrationRequest dto
+    public ResponseEntity<String> registerNurse(NurseRegistrationRequest request) {
+        boolean isValidEmail = emailValidator.
+                test(request.getEmail());
+        if (!isValidEmail) {
+            throw new IllegalStateException("email not valid");
+        }
+
+        String token = nurseService.signUpNurse(new Nurse(
+                request.getFirstName(),
+                request.getLastName(),
+                request.getOtherNames(),
+                request.getAddress(),
+                request.getCountry(),
+                request.getCity(),
+                request.getCountryState(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getDob(),
+                request.getGender(),
+                request.getDepartment(),
+                request.getPhone()
+        )
+        );
+        String link = "http://localhost:8085/api/registration/confirm?token=" + token;
+        emailSender.send(request.getEmail(),
+                buildEmail(request.getFirstName(), link));
+        return new ResponseEntity<>("Your Nurse Account Registration was successfull,"
+                + " check your email for verification link", HttpStatus.OK);
+    }
+    
+    //confirm token
     @Transactional
     public ResponseEntity<String> confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
@@ -92,12 +160,35 @@ public class AuthService {
         if (expiredAt.isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("token expired");
         }
+        
+        if(confirmationToken.getDoctor().getEmail() != null){
+                confirmationTokenService.setConfirmedAt(token);
+                doctorService.enableDoctor(
+                        confirmationToken.getDoctor().getEmail());
+                return new ResponseEntity<>("Your Doctor Account has been Activated Successfully, "
+                        + "Your account would be reveiwed and approved by the Admin",
+                        HttpStatus.OK);
+        }
 
-        confirmationTokenService.setConfirmedAt(token);
-        appUserService.enableAppUser(
-                confirmationToken.getAppUser().getEmail());
-        return new ResponseEntity<>("Account Activated Successfully"
-                , HttpStatus.OK);
+        if (confirmationToken.getNurse().getEmail() != null) {
+                confirmationTokenService.setConfirmedAt(token);
+                nurseService.enableNurse(
+                        confirmationToken.getNurse().getEmail());
+                return new ResponseEntity<>("Your Nurse Account has been Activated Successfully, "
+                        + "Your account would be reveiwed and approved by the Admin",
+                         HttpStatus.OK);
+        }
+        
+        if (confirmationToken.getPatient().getEmail() != null) {
+                confirmationTokenService.setConfirmedAt(token);
+                patientService.enablePatient(
+                        confirmationToken.getPatient().getEmail());
+                return new ResponseEntity<>("Your Patient Account has been Activated Successfully",
+                         HttpStatus.OK);
+        }
+        
+                return new ResponseEntity<>("An error occurred while trying to activate your account, please try again",
+                        HttpStatus.EXPECTATION_FAILED);
     }
 
     private String buildEmail(String name, String link) {
@@ -177,11 +268,32 @@ public class AuthService {
                 .setAuthentication(authentication);
         String jwtToken = jwtProvider.generateToken(authentication);
         username = loginRequest.getUsername();
-        return new AuthenticationResponse(jwtToken, 
-                appUserService.findUserDetails(loginRequest.getUsername()));
+        
+        if (patientService.findPatientDetails(username) != null)
+            return new AuthenticationResponse(jwtToken, 
+                patientService.findPatientDetails(username));
+        
+        if (doctorService.findDoctorDetails(username) != null)
+            return new AuthenticationResponse(jwtToken,
+                    doctorService.findDoctorDetails(username));
+        
+        if (nurseService.findNurseDetails(username) != null)
+            return new AuthenticationResponse(jwtToken,
+                    nurseService.findNurseDetails(username));
+        
+        return new AuthenticationResponse(null, null);
     }
     
     public AppUserRole getRole(){
-        return appUserService.findUserRole(username);
+        if(patientService.findUserRole(username) != null)
+            return patientService.findUserRole(username);
+        
+        if (doctorService.findUserRole(username) != null)
+            return nurseService.findUserRole(username);
+        
+        if (nurseService.findUserRole(username) != null)
+            return nurseService.findUserRole(username);
+        
+        return null;
     }
 }

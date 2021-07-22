@@ -6,7 +6,7 @@
 package com.hospital.management.config;
 
 import com.hospital.management.security.JwtAuthenticationFilter;
-import com.hospital.management.service.AppUserService;
+import com.hospital.management.service.PatientService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private final AppUserService appUserService;
+    private final PatientService appUserService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtAuthenticationFilter jAuthFilter;
     
@@ -49,9 +49,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .authorizeRequests()
                 .antMatchers("/api/registration/**")
                 .permitAll()
+                .antMatchers("/api/registration/patient")
+                .permitAll()
+                .antMatchers("/api/registration/doctor")
+                .permitAll()
+                .antMatchers("/api/registration/nurse")
+                .permitAll()
                 .antMatchers("/api/prescription")
                 .permitAll()
-                .antMatchers("/api/appusers")
+                .antMatchers("/api/patient")
                 .permitAll()
                 .antMatchers("/api/registration/login")
                 .permitAll()

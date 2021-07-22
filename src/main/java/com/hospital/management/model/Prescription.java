@@ -5,7 +5,7 @@
  */
 package com.hospital.management.model;
 
-import com.hospital.management.model.AppUser;
+import com.hospital.management.model.Patient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -47,5 +47,5 @@ public class Prescription {
     String patientAddress;
     private Instant createdDate;
     @ManyToOne(fetch = LAZY)
-    private AppUser user;
+    private Patient user;
 }

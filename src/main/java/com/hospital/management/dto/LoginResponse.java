@@ -21,5 +21,8 @@ public class LoginResponse {
     private String username;
     private AppUserRole userRole;
     private Boolean approvedStatus;
-    private String userId;
+    private String firstName;
+    private String lastName;
+    private String otherNames;
+    private String phone;
 }

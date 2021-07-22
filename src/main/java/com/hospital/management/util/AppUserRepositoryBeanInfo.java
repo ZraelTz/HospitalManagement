@@ -16,7 +16,7 @@ public class AppUserRepositoryBeanInfo extends SimpleBeanInfo {
     // Bean descriptor//GEN-FIRST:BeanDescriptor
     /*lazy BeanDescriptor*/
     private static BeanDescriptor getBdescriptor(){
-        BeanDescriptor beanDescriptor = new BeanDescriptor  ( com.hospital.management.repository.AppUserRepository.class , null ); // NOI18N//GEN-HEADEREND:BeanDescriptor
+        BeanDescriptor beanDescriptor = new BeanDescriptor  ( com.hospital.management.repository.PatientRepository.class , null ); // NOI18N//GEN-HEADEREND:BeanDescriptor
         // Here you can add code for customizing the BeanDescriptor.
 
         return beanDescriptor;     }//GEN-LAST:BeanDescriptor
@@ -109,7 +109,7 @@ public class AppUserRepositoryBeanInfo extends SimpleBeanInfo {
             methods[METHOD_findAll15].setDisplayName ( "" );
             methods[METHOD_findAllById16] = new MethodDescriptor(org.springframework.data.jpa.repository.JpaRepository.class.getMethod("findAllById", new Class[] {java.lang.Iterable.class})); // NOI18N
             methods[METHOD_findAllById16].setDisplayName ( "" );
-            methods[METHOD_findByEmail17] = new MethodDescriptor(com.hospital.management.repository.AppUserRepository.class.getMethod("findByEmail", new Class[] {java.lang.String.class})); // NOI18N
+            methods[METHOD_findByEmail17] = new MethodDescriptor(com.hospital.management.repository.PatientRepository.class.getMethod("findByEmail", new Class[] {java.lang.String.class})); // NOI18N
             methods[METHOD_findByEmail17].setDisplayName ( "" );
             methods[METHOD_findById18] = new MethodDescriptor(org.springframework.data.repository.CrudRepository.class.getMethod("findById", new Class[] {java.lang.Object.class})); // NOI18N
             methods[METHOD_findById18].setDisplayName ( "" );

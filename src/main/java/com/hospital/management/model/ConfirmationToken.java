@@ -56,21 +56,59 @@ public class ConfirmationToken {
     
     @ManyToOne
     @JoinColumn(
-            nullable = false,
-            name = "app_user_id"
+            nullable = true,
+            name = "patient_id"
     )
-    private AppUser appUser;
+    private Patient patient;
+    
+    @ManyToOne
+    @JoinColumn(
+            nullable = true,
+            name = "doctor_id"
+    )
+    private Doctor doctor;
+    
+    @ManyToOne
+    @JoinColumn(
+            nullable = true,
+            name = "nurse_id"
+    )
+    private Nurse nurse;
     
     public ConfirmationToken(String token, 
             LocalDateTime createdAt, 
             LocalDateTime expiresAt, 
-            AppUser appUser) {
+            Patient patient) {
         
         this.token = token;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
-        this.appUser = appUser;
+        this.patient = patient;
     }
+    
+    public ConfirmationToken(String token,
+            LocalDateTime createdAt,
+            LocalDateTime expiresAt,
+            Doctor doctor) {
+
+        this.token = token;
+        this.createdAt = createdAt;
+        this.expiresAt = expiresAt;
+        this.doctor = doctor;
+    }
+    
+    public ConfirmationToken(String token,
+            LocalDateTime createdAt,
+            LocalDateTime expiresAt,
+            Nurse nurse) {
+
+        this.token = token;
+        this.createdAt = createdAt;
+        this.expiresAt = expiresAt;
+        this.nurse = nurse;
+    }
+    
+
     
     
 }
