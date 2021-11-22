@@ -65,7 +65,7 @@ public class AuthService {
         this.registrationToken = token;
         this.firstName = request.getFirstName();
         this.email = request.getEmail();
-        String link = "http://localhost:8085/api/registration/confirm?token=" + token;
+        String link = "https://hospital-management-rest--api.herokuapp.com/api/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
 
         return new ResponseEntity<>("Your Patient Account Registration was successfull,"
@@ -84,7 +84,7 @@ public class AuthService {
         this.registrationToken = token;
         this.firstName = request.getFirstName();
         this.email = request.getEmail();
-        String link = "http://localhost:8085/api/registration/confirm?token=" + token;
+        String link = "https://hospital-management-rest--api.herokuapp.com/api/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
 
         return new ResponseEntity<>("Your Doctor Account Registration was successfull,"
@@ -103,7 +103,7 @@ public class AuthService {
         this.registrationToken = token;
         this.firstName = request.getFirstName();
         this.email = request.getEmail();
-        String link = "http://localhost:8085/api/registration/confirm?token=" + token;
+        String link = "https://hospital-management-rest--api.herokuapp.com/api/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
 
         return new ResponseEntity<>("Your Nurse Account Registration was successfull,"
@@ -112,7 +112,7 @@ public class AuthService {
 
     public ResponseEntity<String> resendConfirmationEmail() {
         confirmationTokenService.getToken(this.registrationToken).get().setExpiresAt(LocalDateTime.now().plusMinutes(15));
-        String link = "http://localhost:8085/api/registration/confirm?token=" + this.registrationToken;
+        String link = "https://hospital-management-rest--api.herokuapp.com/registration/confirm?token=" + this.registrationToken;
         emailSender.send(email, buildEmail(firstName, link));
         return new ResponseEntity<>("Your Confirmation Email has been resent,"
                 + " check your email for verification link", HttpStatus.OK);
