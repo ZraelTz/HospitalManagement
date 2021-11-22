@@ -24,7 +24,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -112,7 +111,7 @@ public class AuthService {
 
     public ResponseEntity<String> resendConfirmationEmail() {
         confirmationTokenService.getToken(this.registrationToken).get().setExpiresAt(LocalDateTime.now().plusMinutes(15));
-        String link = "https://hospital-management-rest--api.herokuapp.com/registration/confirm?token=" + this.registrationToken;
+        String link = "https://hospital-management-rest--api.herokuapp.com/api/registration/confirm?token=" + this.registrationToken;
         emailSender.send(email, buildEmail(firstName, link));
         return new ResponseEntity<>("Your Confirmation Email has been resent,"
                 + " check your email for verification link", HttpStatus.OK);
