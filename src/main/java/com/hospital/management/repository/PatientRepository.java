@@ -23,14 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @EnableJpaRepositories
 @Transactional(readOnly = true)
 public interface PatientRepository extends JpaRepository<Patient, Long>{
-    Optional<Patient> findByEmail(String email);
+    Optional<Patient> findByUserEmail(String email);
     Optional<Patient> findPatientById(Long id);
     void deletePatientById(Long id);
-    
-    @Transactional
-    @Modifying
-    @Query("UPDATE Patient a "
-            + "SET a.enabled = TRUE WHERE a.email = ?1")
-    int enablePatient(String email);
 
 }

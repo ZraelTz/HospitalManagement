@@ -5,9 +5,7 @@
  */
 package com.hospital.management.util;
 
-import com.hospital.management.dto.Username;
 import java.util.function.Predicate;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**

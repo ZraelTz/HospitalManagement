@@ -5,6 +5,7 @@
  */
 package com.hospital.management.dto;
 
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginRequest {
     
+    @NotBlank(message = "your username is required")
     private String username;
+    
+    @NotBlank(message = "your password is required")
     private String password;
 }

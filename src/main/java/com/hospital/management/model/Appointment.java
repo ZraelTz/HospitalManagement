@@ -23,38 +23,41 @@ import static javax.persistence.GenerationType.IDENTITY;
  *
  * @author Zrael
  */
-
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
-public class Prescription implements Serializable {
+public class Appointment implements Serializable {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    
-    @NotBlank(message = "Prescription title is required")
-    private String prescriptionTitle;
-    
-    @NotBlank(message = "Prescription is required")
-    private String prescription;
-    
+
+    @NotBlank(message = "appointment subject is required")
+    private String subject;
+
+    private AppointmentStatus status;
+
     @NotBlank(message = "Patient email is required")
     private String patientEmail;
-    
+
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = LAZY)
     private Patient patient;
-    
+
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = LAZY)
-    private Doctor doctor;   
+    private Doctor doctor;
     
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = LAZY)
     private Nurse nurse;
     
+    @NotBlank(message = "appointment date is required")
+    private LocalDateTime appointmentDate; 
+    
     private LocalDateTime createdDate;
+    
+    private LocalDateTime unfulfillsAt;
 }

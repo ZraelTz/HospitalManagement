@@ -5,74 +5,33 @@
  */
 package com.hospital.management.service;
 
-import com.hospital.management.dto.LoginResponse;
+import com.hospital.management.dto.PatientRegistrationRequest;
 import com.hospital.management.exceptions.UserNotFoundException;
 import com.hospital.management.model.Patient;
-import com.hospital.management.model.AppUserRole;
-import com.hospital.management.model.ConfirmationToken;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.hospital.management.model.User;
+import com.hospital.management.model.UserRole;
 import com.hospital.management.repository.PatientRepository;
-import org.springframework.context.annotation.Primary;
+import com.hospital.management.repository.UserRepository;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 /**
  *
  * @author Zrael
  */
 
-@Service("patient")
-@Primary
+@Service("patientService")
 @AllArgsConstructor
 
-public class PatientService implements UserDetailsService{
+public class PatientService {
     
-    private final static String USER_NOT_FOUND_MSG = 
-            "user with email %s not found";
     private final PatientRepository patientRepository;
-    private final BCryptPasswordEncoder bcryptPasswordEncoder;
-    private final ConfirmationTokenService confirmationTokenService;
-    
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Patient> patientOptional 
-                = patientRepository.findByEmail(email);
-        Patient patient = patientOptional
-                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
-        
-        return new org.springframework.security
-                .core.userdetails.User(patient.getUsername(), 
-                        patient.getPassword(), patient.isEnabled(), true, 
-                        true, true, patient.getAuthorities());
-    }
-    
-    public LoginResponse findPatientDetails(String email) throws UsernameNotFoundException{
-        Optional<Patient> appUserOptional
-                = patientRepository.findByEmail(email);
-        Patient patient = appUserOptional
-                 .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
-        return new LoginResponse(patient.getUsername(), patient.getUserRole(), 
-                patient.getApprovedStatus(), patient.getFirstName(), patient.getLastName(),
-                patient.getOtherNames(), patient.getPhone());
-    }
-    
-    public AppUserRole findUserRole(String email)  throws UsernameNotFoundException{
-        Optional<Patient> appUserOptional
-                = patientRepository.findByEmail(email);
-        Patient patient = appUserOptional
-                 .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
-        return patient.getUserRole();
-    }
-    
-    public String signUpPatient(Patient patient){
-        boolean userExists = patientRepository
-                .findByEmail(patient.getEmail())
+    private final UserRepository userRepository;
+    private final UserService userService;
+       
+    public String signUpPatient(PatientRegistrationRequest newPatient){
+        boolean userExists = userRepository
+                .findByEmail(newPatient.getEmail())
                 .isPresent();
         
         if(userExists) {
@@ -80,32 +39,29 @@ public class PatientService implements UserDetailsService{
             throw new IllegalStateException("email taken");
         }
         
-        String encodedPassword = 
-                bcryptPasswordEncoder.encode(patient.getPassword());
+        User user = new User(newPatient.getEmail(), newPatient.getPassword(), UserRole.PATIENT);
         
-        patient.setPassword(encodedPassword);
-        
-        patientRepository.save(patient);
-        
-        //TODO: send confirmation token
-        String token = UUID.randomUUID().toString();
-        ConfirmationToken confirmationToken = new ConfirmationToken(
-                token,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15),
-                patient        
+        Patient patient = new Patient(
+                newPatient.getFirstName(), 
+                newPatient.getLastName(), 
+                newPatient.getOtherNames(), 
+                newPatient.getAddress(),
+                newPatient.getCountry(), 
+                newPatient.getCity(), 
+                newPatient.getState(), 
+                newPatient.getDob(), 
+                newPatient.getGender(), 
+                newPatient.getPhone(),
+                newPatient.getWeight(),
+                newPatient.getHeight()
         );
-     
-        confirmationTokenService.
-                saveConfirmationToken(confirmationToken);
         
-        //TODO: SEND EMAIL
+        patient.setUser(user);
+        String token = userService.signUpUser(user);
+        patientRepository.save(patient);
         return token;
     }
     
-        public int enablePatient(String emailAddress) {
-        return patientRepository.enablePatient(emailAddress);
-    }
 
     public Patient addPatient(Patient patient) {
 
@@ -116,13 +72,21 @@ public class PatientService implements UserDetailsService{
         return patientRepository.findAll();
     }
 
-    public Patient updatePatient(Patient patient) {
+    public Patient updatePatient(Long patientId, Patient patient) {
+        if (!patientRepository.existsById(patientId)) {
+            throw new UserNotFoundException("Patient with the id " + patientId + "was not found");
+        }
         return patientRepository.save(patient);
     }
 
     public Patient findPatientById(Long id) {
         return patientRepository.findPatientById(id)
-                .orElseThrow(() -> new UserNotFoundException("User by id " + id + " was not found"));
+                .orElseThrow(() -> new UserNotFoundException("Patient with the id " + id + " was not found"));
+    }
+    
+    public Patient findPatientByUserEmail(String email) {
+        return patientRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Patient with the email " + email + " was not found"));
     }
 
     public void deletePatient(Long id) {

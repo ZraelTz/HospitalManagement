@@ -3,14 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.hospital.management.exceptions;
+package com.hospital.management.model;
 
 /**
  *
  * @author Zrael
  */
-public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException(String message) {
-        super(message);
-    }
+public enum UserRole {
+    ADMIN,
+    DOCTOR,
+    NURSE,
+    PATIENT
 }

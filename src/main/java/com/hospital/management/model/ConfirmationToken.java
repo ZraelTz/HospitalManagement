@@ -5,6 +5,7 @@
  */
 package com.hospital.management.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,8 +28,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-
-public class ConfirmationToken {
+public class ConfirmationToken implements Serializable {
     
         @SequenceGenerator(
             name = "confirmation_token_sequence",
@@ -57,55 +57,16 @@ public class ConfirmationToken {
     @ManyToOne
     @JoinColumn(
             nullable = true,
-            name = "patient_id"
+            name = "user_id"
     )
-    private Patient patient;
+    private User user;
     
-    @ManyToOne
-    @JoinColumn(
-            nullable = true,
-            name = "doctor_id"
-    )
-    private Doctor doctor;
-    
-    @ManyToOne
-    @JoinColumn(
-            nullable = true,
-            name = "nurse_id"
-    )
-    private Nurse nurse;
-    
-    public ConfirmationToken(String token, 
-            LocalDateTime createdAt, 
-            LocalDateTime expiresAt, 
-            Patient patient) {
+    public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, User user) {
         
         this.token = token;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
-        this.patient = patient;
-    }
-    
-    public ConfirmationToken(String token,
-            LocalDateTime createdAt,
-            LocalDateTime expiresAt,
-            Doctor doctor) {
-
-        this.token = token;
-        this.createdAt = createdAt;
-        this.expiresAt = expiresAt;
-        this.doctor = doctor;
-    }
-    
-    public ConfirmationToken(String token,
-            LocalDateTime createdAt,
-            LocalDateTime expiresAt,
-            Nurse nurse) {
-
-        this.token = token;
-        this.createdAt = createdAt;
-        this.expiresAt = expiresAt;
-        this.nurse = nurse;
+        this.user = user;
     }
     
 

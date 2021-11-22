@@ -7,6 +7,7 @@ package com.hospital.management.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
@@ -30,16 +30,25 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Entity
 @Builder
-public class Prescription implements Serializable {
+public class Diagnosis implements Serializable {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     
-    @NotBlank(message = "Prescription title is required")
-    private String prescriptionTitle;
+    @NotBlank(message = "please provide the diagnosis severtity, if you have non, input non")
+    private DiagnosisSeverity diagnosisSeverity;
     
-    @NotBlank(message = "Prescription is required")
-    private String prescription;
+    @NotBlank(message = " the diagnosis information is required")
+    private String diagnosisInfo;
+    
+    @NotBlank(message = "the patient symptoms is required")
+    private String symptoms;
+    
+    @NotBlank(message = "please provide info about your clinical findings info")
+    private String clinicalFindings;
+    
+    @NotBlank(message = "please provide your remarks concerning this diagnosis, if you have non, input non")
+    private String additionalRemarks;
     
     @NotBlank(message = "Patient email is required")
     private String patientEmail;
@@ -50,11 +59,7 @@ public class Prescription implements Serializable {
     
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne(fetch = LAZY)
-    private Doctor doctor;   
-    
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = LAZY)
-    private Nurse nurse;
+    private Doctor doctor;
     
     private LocalDateTime createdDate;
 }

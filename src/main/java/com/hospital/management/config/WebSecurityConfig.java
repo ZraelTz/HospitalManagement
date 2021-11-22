@@ -6,15 +6,16 @@
 package com.hospital.management.config;
 
 import com.hospital.management.security.JwtAuthenticationFilter;
-import com.hospital.management.service.PatientService;
+import com.hospital.management.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Configuration;;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -31,9 +32,11 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @EnableWebSecurity
 @Service
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
-    private final PatientService appUserService;
+    private final UserService userService;
+    
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtAuthenticationFilter jAuthFilter;
     
@@ -55,11 +58,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 .permitAll()
                 .antMatchers("/api/registration/nurse")
                 .permitAll()
-                .antMatchers("/api/prescription")
+                .antMatchers("/api/doctor")
+                .permitAll()
+                .antMatchers("/api/nurse")
                 .permitAll()
                 .antMatchers("/api/patient")
                 .permitAll()
-                .antMatchers("/api/registration/login")
+                .antMatchers("/api/appointment")
+                .permitAll()
+                .antMatchers("/api/prescription")
+                .permitAll()
+                .antMatchers("/api/diagnosis")
+                .permitAll()
+                .antMatchers("/api/patient-medical-record")
+                .permitAll()
+                .antMatchers("/api/login")
                 .permitAll()
                 .antMatchers("/v2/api-docs",
                         "/configuration/ui",
@@ -78,14 +91,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     @Autowired
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(daoAuthenticationProvider());
+        auth.authenticationProvider(daoPatientAuthenticationProvider());
     }
+    
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(){
+    public DaoAuthenticationProvider daoPatientAuthenticationProvider(){
         DaoAuthenticationProvider provider = 
                 new DaoAuthenticationProvider();
         provider.setPasswordEncoder(bCryptPasswordEncoder);
-        provider.setUserDetailsService(appUserService);
+        provider.setUserDetailsService(userService);
         return provider;
     }
+    
+    
+    
 }

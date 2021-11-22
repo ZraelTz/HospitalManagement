@@ -7,7 +7,7 @@ package com.hospital.management.repository;
  */
 
 
-import com.hospital.management.model.Prescription;
+import com.hospital.management.model.PatientMedicalRecord;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -20,12 +20,9 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface PrescriptionRepository extends JpaRepository<Prescription, Long> {
+public interface PatientMedicalRecordRepository extends JpaRepository<PatientMedicalRecord, Long> {
 
-    List<Prescription> findByPatientUserEmail(String patientEmail);
-    List<Prescription> findByDoctorUserEmail(String doctorEmail);
-    List<Prescription> findByNurseUserEmail(String doctorEmail);
-    List<Prescription> findByPrescriptionTitle(String prescriptionTitle);
+    List<PatientMedicalRecord> findByPatientUserEmail(String patientEmail);
 }
 
     

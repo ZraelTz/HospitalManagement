@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.hospital.management.util;
-
+package com.hospital.management.model;
 
 /**
  *
- * @author Zrael
+ * @author User
  */
-public interface EmailSender {
-    void send(String to, String email);
+public enum BloodGenotype {
+    AA,
+    AS,
+    SS,
+    AC,
 }

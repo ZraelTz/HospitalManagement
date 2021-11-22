@@ -5,7 +5,7 @@
  */
 package com.hospital.management.dto;
 
-import com.hospital.management.model.AppUserRole;
+import com.hospital.management.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,10 +19,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginResponse {
     private String username;
-    private AppUserRole userRole;
+    private UserRole userRole;
     private Boolean approvedStatus;
-    private String firstName;
-    private String lastName;
-    private String otherNames;
-    private String phone;
+    private Boolean enabledStatus;
+    private Long userId;
 }
