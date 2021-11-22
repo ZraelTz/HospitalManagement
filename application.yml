@@ -6,12 +6,12 @@ server:
 
 spring:
   datasource:
-    password: bcff51b3c59f35d2635925ad24d1c7d70b24afe2f43d2aa39643ebe60fd18ddf
-    url: jdbc:postgresql://ec2-52-202-152-4.compute-1.amazonaws.com:5432/dcilhm31578dvd
-    username: rtvpjhegkusmxo
+    password: walkerzPOSTGRESQLPassword47
+    url: jdbc:postgresql://localhost:5432/hospital_management
+    username: postgres
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
