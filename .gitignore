@@ -20,6 +20,11 @@ target/
 *.ipr
 
 ### NetBeans ###
+/src/main/resources/application.yml
+/src/main/resources/system.properties
+/system.properties
+/application.yml
+/springblog.jks
 /nbproject/private/
 /nbbuild/
 /dist/
